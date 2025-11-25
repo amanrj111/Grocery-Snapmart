@@ -5,7 +5,7 @@ import User from "@/models/user.model";
 import bcrypt from "bcryptjs";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function Post(req:NextRequest){
+export async function POST(req:NextRequest){
   try {
     await connectDb()
     const {name,email,password} = await req.json()
@@ -24,10 +24,20 @@ export async function Post(req:NextRequest){
     }
     
     const hashedPassword = await bcrypt.hash(password,10)
-    
+    const user = await User.create({
+      name,email,password:hashedPassword
+    })
+    return NextResponse.json(
+      user,
+      {status:200}
+    )
+
     
   } catch (error) {
-    
+    return NextResponse.json(
+      {message:`registor error ${error}`},
+      {status:500}
+    )
   }
 }
 
