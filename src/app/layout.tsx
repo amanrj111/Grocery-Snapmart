@@ -1,10 +1,8 @@
 import type { Metadata } from "next";
-
 import "./globals.css";
 
-
 export const metadata: Metadata = {
-  title: "Snap-Mart | 10 minutes grocery delivery app",
+  title: "Snap-Mart | 10 minutes Grocery Delivery App",
   description: "10 minutes Grocery Delivery App",
 };
 
@@ -15,9 +13,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        
-      >
+      <body className="w-full min-h-screen bg-gradient-to-b from-green-100 to-white">
         {children}
       </body>
     </html>
