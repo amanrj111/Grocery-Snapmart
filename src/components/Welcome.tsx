@@ -1,22 +1,46 @@
 "use client";
-import React from 'react'
-import { motion } from 'motion/react'
 
-function Welcome() {
+import { motion } from "framer-motion";
+import { BikeIcon, ShoppingBasket } from "lucide-react";
+
+export default function Welcome() {
   return (
-    <div className='flex flex-col items-center justify-center min-h-screen text-center p-6'>
+    <div className="flex flex-col items-center justify-center min-h-screen text-center p-6">
+      
+      {/* LOGO + TITLE */}
       <motion.div
-      initial = {{
-        opacity:0
-      }}
-      animate = {{
-        opacity:1
-      }}
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="flex items-center gap-3"
       >
-      Hello
+        <ShoppingBasket className="w-10 h-10 text-green-600" />
+        <h1 className="text-4xl md:text-5xl font-extrabold text-green-700">
+          Snapmart
+        </h1>
       </motion.div>
-    </div>
-  )
-}
 
-export default Welcome
+      {/* SUBTITLE ANIMATION */}
+      <motion.p
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.3 }}
+        className="mt-4 text-gray-700 text-lg md:text-xl max-w-lg"
+      >
+        Your one-stop destination for fresh groceries, organic produce, and daily essentials delivered right to your doorstep
+      </motion.p>
+
+      <motion.div
+      initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.3 }}
+        className="flex items-center justify-center gap-10 mt-10"
+      >
+        <ShoppingBasket className="w-24 h-24 md:32 md:h-32 text-green-600 drop-shadow-md"/>
+        <BikeIcon className="w-24 h-24 md:32 md:h-32 text-orange-600 drop-shadow-md"/>
+
+      </motion.div>
+
+    </div>
+  );
+}
