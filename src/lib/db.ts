@@ -1,6 +1,9 @@
 import mongoose from "mongoose";
+import { env } from 'next-runtime-env';
 
-const mongodbUrl = process.env.MONGODB_URL
+const mongodbUrl = process.env.MONGODB_URI
+
+console.log(mongodbUrl)
 
 if(!mongodbUrl){
   throw new Error ("db error")

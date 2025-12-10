@@ -1,12 +1,14 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { BikeIcon, ShoppingBasket } from "lucide-react";
+import { ArrowRight, BikeIcon, ShoppingBasket } from "lucide-react";
+type propType ={
+  nextStep:(s:number) => void
+}
 
-export default function Welcome() {
+export default function Welcome({nextStep}:propType) {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen text-center p-6">
-      
       {/* LOGO + TITLE */}
       <motion.div
         initial={{ opacity: 0, y: -10 }}
@@ -27,19 +29,31 @@ export default function Welcome() {
         transition={{ duration: 0.6, delay: 0.3 }}
         className="mt-4 text-gray-700 text-lg md:text-xl max-w-lg"
       >
-        Your one-stop destination for fresh groceries, organic produce, and daily essentials delivered right to your doorstep
+        Your one-stop destination for fresh groceries, organic produce, and
+        daily essentials delivered right to your doorstep
       </motion.p>
 
       <motion.div
-      initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.6, delay: 0.3 }}
         className="flex items-center justify-center gap-10 mt-10"
       >
-        <ShoppingBasket className="w-24 h-24 md:32 md:h-32 text-green-600 drop-shadow-md"/>
-        <BikeIcon className="w-24 h-24 md:32 md:h-32 text-orange-600 drop-shadow-md"/>
-
+        <ShoppingBasket className="w-24 h-24 md:32 md:h-32 text-green-600 drop-shadow-md" />
+        <BikeIcon className="w-24 h-24 md:32 md:h-32 text-orange-600 drop-shadow-md" />
       </motion.div>
+
+      <motion.button
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.8 }}
+        className="inline-flex items-center gap bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-8 rounded-2*1 shadow-md transition-all duration-200 mt-10"
+        onClick = {() => nextStep(2)}
+      >
+        Next
+        <ArrowRight/>
+      </motion.button>
+
 
     </div>
   );
