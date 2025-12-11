@@ -16,6 +16,7 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import googleImage from "@/assets/google.png";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 
 type propType = {
   previousStep: (s: number) => void;
@@ -27,6 +28,7 @@ function RegisterForm({ previousStep }: propType) {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const router = useRouter()
 
   // API call
   const handleRegister = async (e: React.FormEvent) => {
@@ -134,7 +136,9 @@ function RegisterForm({ previousStep }: propType) {
         {/* Submit Button */}
         {(() => {
           const formValidation =
-            name !== "" && email !== "" && password !== "";
+            name.trim() !== "" &&
+            email.trim() !== "" &&
+            password.trim() !== "";
 
           return (
             <button
@@ -167,7 +171,7 @@ function RegisterForm({ previousStep }: propType) {
         </button>
       </motion.form>
 
-      <p className="cursor-pointer text-gray-600 mt-6 text-sm flex items-center gap-1">
+      <p className="cursor-pointer text-gray-600 mt-6 text-sm flex items-center gap-1" onClick={() => router.push("/login")}>
         Already have an account?
         <LogIn className="text-green-600" />
         <span className="text-green-600">Sign In</span>

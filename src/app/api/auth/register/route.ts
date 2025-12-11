@@ -15,7 +15,7 @@ export async function POST(req: NextRequest) {
     const { name, email, password } = body;
 
     // Field validation
-    if (!name || !email || !password) {
+    if (!name?.trim() || !email?.trim() || !password?.trim()) {
       return NextResponse.json(
         { message: "All fields are required" },
         { status: 400 }

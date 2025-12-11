@@ -1,22 +1,21 @@
 "use client";
 
 import {
-  ArrowLeft,
   EyeIcon,
   EyeOff,
   LeafIcon,
   Loader,
   Lock,
-  LogIn,
   Mail,
-  User,
+  LogIn as LogInIcon,
 } from "lucide-react";
-import React, { useState } from "react";
+import React, { FormEvent, useState } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import googleImage from "@/assets/google.png";
 import axios from "axios";
-
+import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
 
 
 function LogIn() {
@@ -24,20 +23,24 @@ function LogIn() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const router = useRouter()
+  const handleLogIn = async(e:FormEvent) => {
+    e.preventDefault()
+    setLoading(true)
+    try{
+      await signIn("credentials",{
+        email, password
+      }) 
+      setLoading(false)
+    }catch(error) {
+        console.log(error)
+        setLoading(false)
+    }
 
- 
+  }
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen px-6 py-10 bg-white relative">
-      {/* Back Button */}
-      <div
-        className="absolute top-6 left-6 flex items-center gap-2 text-green-700 hover:text-green-800 transition-colors cursor-pointer"
-        onClick={() => previousStep(1)}
-      >
-        <ArrowLeft className="w-5 h-5" />
-        <span className="font-medium">Back</span>
-      </div>
-
       {/* Title */}
       <motion.h1
         initial={{ y: -10, opacity: 0 }}
@@ -45,34 +48,23 @@ function LogIn() {
         transition={{ duration: 0.6 }}
         className="text-4xl font-extrabold text-green-700 mb-2"
       >
-        Create Account
+        Welcome Back
       </motion.h1>
 
       {/* Subtitle */}
       <p className="text-gray-600 mb-8 flex items-center gap-1">
-        Join Snap-Mart Today{" "}
+        LogIn To Snap-Mart {" "}
         <LeafIcon className="w-5 h-5 text-green-600" />
       </p>
 
       {/* Form */}
       <motion.form
-        onSubmit={handleRegister}
+        onSubmit={handleLogIn }
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.6 }}
         className="flex flex-col gap-5 w-full max-w-sm"
       >
-        {/* Name Field */}
-        <div className="relative">
-          <User className="absolute left-3 top-3.5 w-5 h-5 text-gray-400" />
-          <input
-            type="text"
-            placeholder="Your Name"
-            className="w-full border border-gray-300 rounded-xl py-3 pl-10 pr-4 text-gray-800 focus:ring-2 focus:ring-green-500 focus:border-green-500 focus:outline-none"
-            onChange={(e) => setName(e.target.value)}
-            value={name}
-          />
-        </div>
 
         {/* Email Field */}
         <div className="relative">
@@ -114,7 +106,8 @@ function LogIn() {
         {/* Submit Button */}
         {(() => {
           const formValidation =
-            name !== "" && email !== "" && password !== "";
+            email.trim() !== "" &&
+            password.trim() !== "";
 
           return (
             <button
@@ -128,7 +121,7 @@ function LogIn() {
               {loading ? (
                 <Loader className="w-5 h-5 animate-spin" />
               ) : (
-                "Register"
+                "LogIn"
               )}
             </button>
           );
@@ -147,10 +140,10 @@ function LogIn() {
         </button>
       </motion.form>
 
-      <p className="cursor-pointer text-gray-600 mt-6 text-sm flex items-center gap-1">
-        Already have an account?
-        <LogIn className="text-green-600" />
-        <span className="text-green-600">Sign In</span>
+      <p className="cursor-pointer text-gray-600 mt-6 text-sm flex items-center gap-1" onClick={() => router.push("/register")}>
+        Want to create an account ?
+        <LogInIcon className="w-4 h-4" />
+        <span className="text-green-600">Sign Up</span>
       </p>
     </div>
   );
