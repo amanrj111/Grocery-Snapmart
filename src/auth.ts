@@ -1,82 +1,102 @@
-import NextAuth from "next-auth";
-import Credentials from "next-auth/providers/credentials";
-import Email from "next-auth/providers/email";
-import Google from "next-auth/providers/google";
-import connectDb from "./lib/db";
-import User from "./models/user.model";
-import { error } from "console";
-import bcrypt from "bcryptjs";
+import NextAuth from "next-auth"
+import Credentials from "next-auth/providers/credentials"
+import connectDb from "./lib/db"
+import User from "./models/user.model"
+import bcrypt from "bcryptjs"
+import Google from "next-auth/providers/google"
+ 
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
     Credentials({
-      credentials: {
-        Email: { label: "email", type: "email" },
-        password: { label: " Password", type: "password" },
-      },
+        credentials: {
+        email: { label: "email",type:"email" },
+        password: { label: "Password", type: "password" },
+      } ,
+     async authorize(credentials, request) {
+         
+            await connectDb()
+            const email=credentials.email
+            const password=credentials.password as string
+            const user=await User.findOne({email})
+            if(!user){
+                throw new Error("user does not exist")
+            }
+            const isMatch=await bcrypt.compare(password,user.password)
+            if(!isMatch){
+                throw new Error("incorrect password")
+            }
+            return {
+                id:user._id.toString(),
+                email:user.email,
+                name:user.name,
+                role:user.role
+            }
 
-      async authorize(credentials, request) {
-          await connectDb();
-          const email = credentials.Email;
-          const password = credentials.password as string;
-          const user = await User.findOne({ email });
-          if (!user) {
-            throw new Error("user does not exist");
-          }
-          const isMatch = await bcrypt.compare(password, user.Password);
-          if (!isMatch) {
-            throw new Error("incorrect password");
-          }
-          return {
-            id: user._id.toString(),
-            email: user.email,
-            name: user.name,
-            role: user.role,
-          };
-      },
+          } 
+    
     }),
+    Google({
+      clientId:process.env.GOOGLE_CLIENT_ID,
+      clientSecret:process.env.GOOGLE_CLIENT_SECRET
+    })
   ],
+  callbacks:{
+    // token ke ander user ka data dalta hai
+    async signIn({user,account}) {
+      console.log(user)
+      if(account?.provider=="google"){
+        await connectDb()
+        let dbUser=await User.findOne({email:user.email})
+       if(!dbUser){
+         dbUser=await User.create({
+          name:user.name,
+          email:user.email,
+          image:user.image
+         })
+       }
 
-  callbacks: {
-    //token ke andar user ka data dalta hai
-    jwt({token, user}) {
-        if(user) {
-          token.id = user.id,
-          token.name = user.name,
-          token.email = user.email,
-          token.role = user.role
+       user.id=dbUser._id.toString()
+       user.role=dbUser.role
+      }
+      return true
+    },
+    jwt({token,user,trigger,session}) {
+        if(user){
+            token.id=user.id,
+            token.name=user.name,
+            token.email=user.email,
+            token.role=user.role
         }
+  if(trigger=="update"){
+    token.role=session.role
+  }
+
+
         return token
     },
-
-    session({session,token}){
-      if(session.user){
-        session.user.id = token.id as string,
-        session.user.name = token.name as string,
-        session.user.email = token.email as string,
-        session.user.role = token.role as string
-      }
-      return session
+    session({session,token}) {
+        if(session.user){
+            session.user.id=token.id as string,
+            session.user.name=token.name as string,
+            session.user.email=token.email as string
+             session.user.role=token.role as string
+        }
+        return session
     },
-
-
   },
-
-  pages: {
-    signIn: "/login",
-    error: " /login"
+  pages:{
+    signIn:"/login",
+    error:"/login"
   },
-
-  session: {
-    strategy: "jwt",
-    maxAge: 10*24*60*60*1000
+  session:{
+    strategy:"jwt",
+    maxAge:10*24*60*60*1000
   },
+  secret:process.env.AUTH_SECRET
+})
 
-  secret: process.env.AUTH_SCERET
-  
-});
 
-//connect to db
+// connect db
 //email check
 //password match
-//login kr denge
