@@ -24,7 +24,7 @@ try {
    await signIn("credentials",{
     email,password
    }) 
-  
+  router.push("/")
    setLoading(false)
 } catch (error) {
     console.log(error)
