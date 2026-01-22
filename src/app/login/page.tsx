@@ -17,20 +17,31 @@ function Login() {
     const router=useRouter()
     const session=useSession()
     console.log(session)
-    const handleLogin=async (e:FormEvent)=>{
-        e.preventDefault()
-        setLoading(true)
-try {
-   await signIn("credentials",{
-    email,password
-   }) 
-  router.push("/")
-   setLoading(false)
-} catch (error) {
-    console.log(error)
-    setLoading(false)
-}
+    const handleLogin = async (e: FormEvent) => {
+  e.preventDefault();
+  setLoading(true);
+
+  try {
+    const res = await signIn("credentials", {
+      email,
+      password,
+      redirect: false,   // ✅ IMPORTANT
+    });
+
+    console.log("login response:", res);
+
+    if (res?.ok) {
+      router.push("/");   // ✅ redirect to home
+    } else {
+      alert("Invalid email or password");
     }
+  } catch (error) {
+    console.log(error);
+  } finally {
+    setLoading(false);
+  }
+};
+
   return (
     <div className='flex flex-col items-center justify-center min-h-screen px-6 py-10 bg-white relative'>
       
