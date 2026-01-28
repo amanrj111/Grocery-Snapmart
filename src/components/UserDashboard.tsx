@@ -7,14 +7,17 @@ import GroceryItemCard from "./GroceryItemCard";
 
 async function UserDashboard(){
   await connectDb()
-  const groceries = await Grocery.find({}).lean()
+
+  const groceries = await Grocery.find({})
+  const plainGrocery = JSON.parse(JSON.stringify(groceries))
+
 
 
   return (
     <>
       <HeroSection />
       <CategorySlider />
-      {groceries.map((item)=>(
+      {plainGrocery.map((item:any)=>(
         <GroceryItemCard item = {item}/>
       ))}
     </>
