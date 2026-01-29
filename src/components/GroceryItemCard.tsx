@@ -34,6 +34,20 @@ function GroceryItemCard({ item }: { item: IGrocery }) {
         />
         <div className="absolute inset-0 bg-linear-to-t from-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300" />
       </div>
+      <div className="p-4 flex flex-col flex-1">
+      <p className="text-xs text-gray-500 font-medium mb-1">{item.category}</p>
+      <h3>{item.name}</h3>
+      <div className="flex items-center justify-between mt-2">
+        <span className="text-xs font-medium text-gray-600 bg-gray-100 px-2 py-1 rounded-full">
+          {item.unit}
+        </span>
+        <span className="text-green-700 font-bold text-lg">₹{item.price}</span>
+      </div>
+
+
+
+
+      </div>
     </motion.div>
   );
 }
