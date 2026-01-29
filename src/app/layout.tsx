@@ -1,11 +1,17 @@
+
 import type { Metadata } from "next";
+
 import "./globals.css";
-import { SessionProvider } from "next-auth/react";
 import Provider from "@/Provider";
+import StoreProvider from "@/redux/StoreProvider";
+import InitUser from "@/InitUser";
+
+
+
 
 export const metadata: Metadata = {
-  title: "Snap-Mart | 10 minutes Grocery Delivery App",
-  description: "10 minutes Grocery Delivery App",
+  title: "Snapcart | 10 minutes grocery Delivery App",
+  description: "10 minutes grocery Delivery App",
 };
 
 export default function RootLayout({
@@ -17,10 +23,13 @@ export default function RootLayout({
     <html lang="en">
       <body className="w-full min-h-screen bg-linear-to-b from-green-50 to-white">
         <Provider>
+          <StoreProvider>
           
-        {children}
-        </Provider>
+        <InitUser/>
         
+        {children}
+          </StoreProvider>
+        </Provider>
       </body>
     </html>
   );
