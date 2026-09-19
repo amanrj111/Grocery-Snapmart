@@ -7,8 +7,6 @@ import StoreProvider from "@/redux/StoreProvider";
 import InitUser from "@/InitUser";
 
 
-
-
 export const metadata: Metadata = {
   title: "Snapcart | 10 minutes grocery Delivery App",
   description: "10 minutes grocery Delivery App",
