@@ -13,27 +13,52 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         email: { label: "email",type:"email" },
         password: { label: "Password", type: "password" },
       } ,
-     async authorize(credentials, request) {
-         
-            await connectDb()
-            const email=credentials.email
-            const password=credentials.password as string
-            const user=await User.findOne({email})
-            if(!user){
-                throw new Error("user does not exist")
-            }
-            const isMatch=await bcrypt.compare(password,user.password)
-            if(!isMatch){
-                throw new Error("incorrect password")
-            }
-            return {
-                id:user._id.toString(),
-                email:user.email,
-                name:user.name,
-                role:user.role
-            }
 
-          } 
+
+
+  async authorize(credentials, request) {
+  await connectDb();
+
+  const email = credentials?.email as string;
+  const password = credentials?.password as string;
+
+  if (!email || !password) {
+    return null;
+  }
+
+  const user = await User.findOne({
+    email: email.trim().toLowerCase(),
+  });
+
+  if (!user) {
+    throw new Error("User does not exist");
+  }
+
+  if (
+    typeof user.password !== "string" ||
+    !user.password
+  ) {
+    throw new Error("Password is missing in database");
+  }
+
+  const isMatch = await bcrypt.compare(
+    password,
+    user.password
+  );
+
+  if (!isMatch) {
+    throw new Error("Incorrect password");
+  }
+
+  return {
+    id: user._id.toString(),
+    email: user.email,
+    name: user.name,
+    role: user.role,
+  };
+}
+
+
     
     }),
     Google({
